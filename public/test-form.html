@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Booking Form</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input, select, textarea { width: 100%; padding: 8px; margin-bottom: 10px; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
+        .message { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>Test Booking Form</h1>
+    
+    <form id="booking-form">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="service">Service:</label>
+            <select id="service" name="service" required>
+                <option value="">Choose a service</option>
+                <option value="web-development">Web Development</option>
+                <option value="web-design">Web Design</option>
+                <option value="consultation">Consultation</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="time">Time:</label>
+            <input type="time" id="time" name="time" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="notes">Notes:</label>
+            <textarea id="notes" name="notes" rows="3"></textarea>
+        </div>
+        
+        <button type="submit">Submit Test Booking</button>
+    </form>
+
+    <div id="message"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('booking-form');
+            const messageDiv = document.getElementById('message');
+            
+            // Set minimum date to today
+            const dateInput = document.getElementById('date');
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.setAttribute('min', today);
+            
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+                
+                console.log('Submitting booking data:', data);
+                
+                try {
+                    const response = await fetch('/api/book', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    const result = await response.json();
+                    console.log('Server response:', result);
+                    
+                    if (response.ok) {
+                        messageDiv.className = 'message success';
+                        messageDiv.textContent = '✅ Booking submitted successfully! Check admin dashboard.';
+                        form.reset();
+                    } else {
+                        messageDiv.className = 'message error';
+                        messageDiv.textContent = '❌ Error: ' + (result.message || 'Unknown error');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    messageDiv.className = 'message error';
+                    messageDiv.textContent = '❌ Network error: ' + error.message;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
