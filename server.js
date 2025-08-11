@@ -55,6 +55,10 @@ app.use('/api/book', bookingRoutes);
 const adminRoutes = require('./routes/admin');
 app.use('/api/admin', adminRoutes);
 
+// Mount contact routes
+const contactRoutes = require('./routes/contact');
+app.use('/api/contact', contactRoutes);
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error('Server error:', err);
