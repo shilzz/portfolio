@@ -1,0 +1,39 @@
+{
+  "name": "portfolio",
+  "version": "1.0.0",
+  "description": "Portfolio project with booking functionality",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "sqlite": "node server-sqlite.js",
+    "dev-sqlite": "nodemon server-sqlite.js",
+    "setup": "node setup-env.js",
+    "kill-port": "node kill-port.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "express-session": "^1.17.3",
+    "mongoose": "^8.17.1",
+    "node-fetch": "^2.7.0",
+    "nodemailer": "^6.9.7",
+    "sqlite3": "^5.1.7",
+    "stripe": "^14.25.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "keywords": [
+    "portfolio",
+    "booking",
+    "nodejs",
+    "express",
+    "mongodb"
+  ],
+  "author": "",
+  "license": "ISC"
+}

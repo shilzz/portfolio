@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: portfolio-booking
+    env: node
+    plan: free
+    autoDeploy: true
+    region: frankfurt
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
