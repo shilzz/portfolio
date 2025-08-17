@@ -3,13 +3,23 @@ const nodemailer = require('nodemailer');
 const Booking = require('../models/Booking');
 const router = express.Router();
 
+// Basic HTML escaping to prevent injection in email templates
+function escapeHtml(str = '') {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 // Email transporter setup function
 function createTransporter() {
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
     console.warn('⚠️  Email credentials not configured. Emails will not be sent.');
     return null;
   }
-  
+
   return nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -55,19 +65,25 @@ router.post('/', async (req, res) => {
     const transporter = createTransporter();
     if (transporter) {
       try {
+        const safeService = escapeHtml(service.replace(/-/g, ' ').toUpperCase());
+        const safeName = escapeHtml(name);
+        const safeDate = escapeHtml(date);
+        const safeTime = escapeHtml(time);
+        const safeNotes = escapeHtml(notes || 'None');
+
         const mailOptions = {
           from: process.env.EMAIL_USER,
           to: email,
           subject: 'Booking Confirmation - Payment Required',
           html: `
             <h2>Booking Confirmation</h2>
-            <p>Dear ${name},</p>
+            <p>Dear ${safeName},</p>
             <p>Your booking has been confirmed with the following details:</p>
             <ul>
-              <li><strong>Service:</strong> ${service.replace('-', ' ').toUpperCase()}</li>
-              <li><strong>Date:</strong> ${date}</li>
-              <li><strong>Time:</strong> ${time}</li>
-              <li><strong>Notes:</strong> ${notes || 'None'}</li>
+              <li><strong>Service:</strong> ${safeService}</li>
+              <li><strong>Date:</strong> ${safeDate}</li>
+              <li><strong>Time:</strong> ${safeTime}</li>
+              <li><strong>Notes:</strong> ${safeNotes}</li>
             </ul>
             <p><strong>Payment Required:</strong> 6 BHD</p>
             <p>Please complete your payment to secure your booking. We will contact you with payment instructions.</p>
